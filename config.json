@@ -1,0 +1,36 @@
+{
+    "train": {
+        "episodes": 10000,
+        "max_episode_steps": 150
+    },
+    "eval": {
+        "episodes": 100,
+        "max_episode_steps": 50
+    },
+    "optimization": {
+        "trials": 100,
+        "params_file": "params.json"
+    },
+    "lr": {
+        "min": 1e-05,
+        "max": 0.1
+    },
+    "gamma": {
+        "min": 0.6,
+        "max": 0.99
+    },
+    "epsilon": {
+        "start": {
+            "min": 0.5,
+            "max": 1.0
+        },
+        "min": {
+            "min": 0.0,
+            "max": 0.8
+        },
+        "decay": {
+            "min": 1e-06,
+            "max": 0.001
+        }
+    }
+}
