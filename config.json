@@ -1,6 +1,6 @@
 {
     "train": {
-        "episodes": 10000,
+        "episodes": 20000,
         "max_episode_steps": 150
     },
     "eval": {

@@ -5,13 +5,12 @@ import gymnasium as gym
 import numpy as np
 import optuna
 
+from actions import evaluate
 from config import Config
 
 
 def main(env: gym.Env, config: Config) -> optuna.Study:
     def objective(trial: optuna.Trial):
-        max_episode_steps = 150
-
         q_table = np.zeros((env.observation_space.n, env.action_space.n))  # type: ignore
         q_table.shape
 
@@ -57,7 +56,7 @@ def main(env: gym.Env, config: Config) -> optuna.Study:
                 obs = next_observation
 
                 steps += 1
-                if steps > max_episode_steps:
+                if steps > config.train.max_episode_steps:
                     break
 
             epsilon = max(min_epsilon, epsilon - epsilon_decay)
@@ -66,34 +65,11 @@ def main(env: gym.Env, config: Config) -> optuna.Study:
             if trial.should_prune():
                 raise optuna.TrialPruned()
 
-        # Evaluation
-        eval_reward = 0
-        max_episode_steps = 50
+        eval_reward = evaluate(
+            env, q_table, config.train.episodes, config.train.max_episode_steps
+        )
 
-        # evaluate the agent
-        for _ in range(config.eval.episodes):
-            obs, info = env.reset()
-            done = False
-            episode_reward = 0
-            steps = 0
-
-            while not done:
-                action = np.argmax(q_table[obs])
-                # action = np.argmax(q_table[obs, np.where(info["action_mask"] == 1)[0]])
-                next_observation, reward, done, truncated, info = env.step(action)
-                episode_reward += reward  # pyright: ignore[reportOperatorIssue]
-                obs = next_observation
-
-                steps += 1
-                if steps > max_episode_steps:
-                    break
-
-            eval_reward += episode_reward
-
-        mean_eval_reward = eval_reward / config.eval.episodes
-        env.close()
-
-        return mean_eval_reward
+        return eval_reward / config.eval.episodes
 
     study = optuna.create_study(direction="maximize")
     study.optimize(objective, n_trials=config.optimization.trials)

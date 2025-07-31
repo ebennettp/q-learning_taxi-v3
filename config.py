@@ -13,7 +13,7 @@ class EpsilonLimit(BaseModel):
     decay: Limits
 
 
-class Stage(BaseModel):
+class StageCfg(BaseModel):
     episodes: int
     max_episode_steps: int
 
@@ -36,8 +36,8 @@ class Config(BaseSettings):
     #     env_file=".env", env_nested_delimiter="__", extra="ignore"
     # )
 
-    train: Stage = Stage(episodes=10000, max_episode_steps=150)
-    eval: Stage = Stage(episodes=100, max_episode_steps=50)
+    train: StageCfg = StageCfg(episodes=10000, max_episode_steps=150)
+    eval: StageCfg = StageCfg(episodes=100, max_episode_steps=50)
 
     optimization: Optimization = Optimization()
 
