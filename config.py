@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from pydantic_settings import BaseSettings  # , SettingsConfigDict
 
 
 class Limits(BaseModel):
@@ -31,11 +30,7 @@ class Hyperparameters(BaseModel):
     epsilon_decay: float
 
 
-class Config(BaseSettings):
-    # model_config = SettingsConfigDict(
-    #     env_file=".env", env_nested_delimiter="__", extra="ignore"
-    # )
-
+class Config(BaseModel):
     train: StageCfg = StageCfg(episodes=10000, max_episode_steps=150)
     eval: StageCfg = StageCfg(episodes=100, max_episode_steps=50)
 

@@ -35,7 +35,7 @@ def train(
             else:  # Exploit
                 action = np.argmax(q_table[obs])
 
-            next_observation, reward, done, truncated, info = env.step(action)
+            next_observation, reward, terminated, truncated, info = env.step(action)
 
             max_next_reward = q_table[next_observation][
                 np.argmax(q_table[next_observation])
@@ -47,6 +47,7 @@ def train(
             )
 
             obs = next_observation
+            done = terminated or truncated
 
             steps += 1
             if steps > max_episodes_steps:
